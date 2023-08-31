@@ -1,6 +1,5 @@
-const { default: expect } = require('expect')
 const { normalizeURL, getURLsFromHTML } = require('./crawl.js')
-const { test, except } = require('@jest/globals')
+const { test, expect } = require('@jest/globals')
 
 test('normalizeURL with specified path and a trailing forward slash', () => {
     const input = 'https://blog.boot.dev/path/'

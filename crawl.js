@@ -32,16 +32,17 @@ async function crawlPage(baseURL, currentURL, pages){
 
     if (Math.floor(response.status/400) === 1){
         console.log(`Webpage not found : ${currentURL}`)
-        return
+        return pages
     }
     else if (Math.floor(response.status/500) === 1){
         console.log(`Internal server error on page ${currentURL}`)
-        return
+        return pages
     }
 
     const contentType = response.headers.get('content-type')
     if (!contentType.includes('text/html')){
         console.log(`Non-html response received on page ${currentURL}`)
+        return pages
     }
 
     const htmlText = await response.text()

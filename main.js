@@ -1,4 +1,5 @@
 const { crawlPage } = require('./crawl.js')
+const { printReport } = require('./report.js')
 
 async function main(){
     if (process.argv.length < 3){
@@ -17,11 +18,10 @@ async function main(){
 
     const pagesMap = await crawlPage(baseURL, baseURL, {})
 
-    for(let i in pagesMap){
-        console.log(`${i} : ${pagesMap[i]}`)
-    }
-
     console.log('Crawling completed successfully')
+
+    printReport(pagesMap)
+    
     process.exit(0)
 }
 
