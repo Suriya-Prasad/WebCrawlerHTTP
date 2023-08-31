@@ -1,6 +1,6 @@
-const { crawlPage, isValidURL } = require('./crawl.js')
+const { crawlPage } = require('./crawl.js')
 
-function main(){
+async function main(){
     if (process.argv.length < 3){
         console.log("No website provided")
         process.exit(1)
@@ -13,14 +13,16 @@ function main(){
 
     const baseURL = process.argv[2]
 
-    if (!isValidURL(baseURL)){
-        console.log('Invalid URL entered')
-        process.exit(1)
-    }
-
     console.log(`Starting crawl on ${baseURL}`)
 
-    crawlPage(baseURL)
+    const pagesMap = await crawlPage(baseURL, baseURL, {})
+
+    for(let i in pagesMap){
+        console.log(`${i} : ${pagesMap[i]}`)
+    }
+
+    console.log('Crawling completed successfully')
+    process.exit(0)
 }
 
 main()

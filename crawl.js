@@ -1,7 +1,30 @@
 const { JSDOM } = require('jsdom')
 
-async function crawlPage(currentURL){
+async function crawlPage(baseURL, currentURL, pages){
+
+    if (!isValidURL(currentURL)){
+        console.log(`Invalid URL : ${currentURL}`)
+        return pages
+    }
+    
+    const currentURLObj = new URL(currentURL)
+    const baseURLObj = new URL(baseURL)
+
+    if (currentURLObj.hostname != baseURLObj.hostname){
+        return pages
+    }
+
+    const normalizedCurrentURL = normalizeURL(currentURL)
+
+    if(pages[normalizedCurrentURL] > 0){
+        pages[normalizedCurrentURL]++
+        return pages
+    }
+
+    pages[normalizedCurrentURL] = 1
+
     console.log(`Currently crawling : ${currentURL}`)
+
     const response = await fetch(currentURL, {
         method:'GET',
         mode:'cors'
@@ -20,7 +43,16 @@ async function crawlPage(currentURL){
     if (!contentType.includes('text/html')){
         console.log(`Non-html response received on page ${currentURL}`)
     }
+
     const htmlText = await response.text()
+
+    const linksInCurrentPage = getURLsFromHTML(htmlText, baseURL)
+
+    for (let link of linksInCurrentPage){
+        pages = await crawlPage(baseURL, link, pages)
+    }
+
+    return pages
 }
 
 function getURLsFromHTML(htmlBody, baseURL){
